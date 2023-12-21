@@ -1,4 +1,19 @@
-export const books = [
+type Book = {
+  "author": string,
+  "country": string,
+  "imageLink": string,
+  "language": string,
+  "link": string,
+  "pages": number,
+  "title": string,
+  "year": number
+};
+
+export async function getBooks(): Promise<Book[]> {
+  return books;
+}
+
+const books = [
   {
     "author": "Chinua Achebe",
     "country": "Nigeria",
@@ -999,4 +1014,4 @@ export const books = [
     "title": "Memoirs of Hadrian",
     "year": 1951
   }
-] as const;
+];

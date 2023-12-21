@@ -1,0 +1,25 @@
+.alternating-list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+
+    >li {
+        padding: 1rem 0.5rem;
+
+        &:nth-child(2n + 1) {
+            background: hsl(0deg 50% 100% / 30%);
+            color: white;
+        }
+
+        &:nth-child(2n) {
+            background: hsl(0deg 50% 100% / 10%);
+            color: white;
+        }
+
+        &:hover {
+            background: hsl(0deg 50% 100% / 60%);
+            color: black;
+        }
+    }
+}
