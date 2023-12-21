@@ -5,13 +5,21 @@ import books from "./books.json";
 const app = express();
 
 // CRUD - Create Read Update Delete
-app.get("/api/books", (_, res) => {
+app.get("/api/books", (req, res) => {
     // List books
-    res.send(books);
+    res.send(books.map(({ id, author, title }) => ({ id, author, title })));
 });
 
-app.get("/api/books/:id", (_, res) => {
-    // TODO: return book details
+app.get("/api/books/:bookId", (req, res) => {
+    const book = books.find((b) => b.id === req.params.bookId);
+
+    if (!book) {
+        res.status(404);
+        res.send(`Book with id ${req.params.bookId} not found.`);
+        return;
+    }
+
+    res.send(book);
 });
 
 app.post("/api/books", (req, res) => {
