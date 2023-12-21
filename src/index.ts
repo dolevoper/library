@@ -1,10 +1,11 @@
 import { createServer } from "http";
 import express from "express";
+import books from "./books.json";
 
 const app = express();
 
-app.get("/api/hello", (req, res) => {
-    res.send("world");
+app.get("/api/books", (_, res) => {
+    res.send(books);
 });
 
 app.use(express.static("public"));
