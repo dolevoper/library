@@ -1,4 +1,5 @@
 type Book = {
+  id: string,
   author: string,
   country: string,
   imageLink: string,
@@ -11,6 +12,12 @@ type Book = {
 
 export async function getBooks(): Promise<Book[]> {
   const res = await fetch("/api/books");
+
+  return res.json();
+}
+
+export async function getBookDetails(bookId: string): Promise<Book> {
+  const res = await fetch(`/api/books/${bookId}`);
 
   return res.json();
 }

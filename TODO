@@ -1,0 +1,27 @@
+Library
+
+pages
+* book list/search page
+	- search by title
+	- search by author
+	- filter by genere
+* book details page
+	- show availability
+	- take book
+* library members
+	- search by name
+	- search by book
+* member details
+	- see current books
+	- return book
+
+more features
+* limit number of books per member (configurable)
+* overdue report
+* inventory page
+
+more details
+* JSON file with book details
+* keep inventory, members and loans separately
+
+API - Application Programmable Interface

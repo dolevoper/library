@@ -9,7 +9,7 @@ async function app() {
 
     const books = await getBooks();
 
-    bookList.innerHTML = books.map((book) => `<li>${book.title} - ${book.author}</li>`).join("\n");
+    bookList.innerHTML = books.map((book) => `<li><a href="/book-details.html#${book.id}">${book.title} - ${book.author}</a></li>`).join("\n");
 }
 
 app();
