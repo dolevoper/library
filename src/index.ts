@@ -4,9 +4,7 @@ import books from "./books.json";
 
 const app = express();
 
-// CRUD - Create Read Update Delete
 app.get("/api/books", (req, res) => {
-    // List books
     res.send(books.map(({ id, author, title }) => ({ id, author, title })));
 });
 
@@ -20,22 +18,6 @@ app.get("/api/books/:bookId", (req, res) => {
     }
 
     res.send(book);
-});
-
-app.post("/api/books", (req, res) => {
-    // Create
-});
-
-app.put("/api/books/:bookId", (req, res) => {
-    // Replace
-});
-
-app.patch("/api/books/:id", (req, res) => {
-    // Update
-});
-
-app.delete("/api/books/:id", (req, res) => {
-    // Delete book
 });
 
 app.use(express.static("public"));
