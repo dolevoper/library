@@ -1,11 +1,16 @@
 import { createServer } from "http";
-import { appendFile, readFile } from "fs/promises";
+import { appendFile, readFile, writeFile } from "fs/promises";
 import express from "express";
 import books from "./books.json";
 import path from "path";
 import { randomUUID } from "crypto";
+import { json } from "body-parser";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors())
+app.use(json());
 
 app.get("/api/books", (req, res) => {
     res.send(books.map(({ id, author, title }) => ({ id, author, title })));
@@ -31,7 +36,7 @@ app.get("/api/books/:bookId/copies", async (req, res) => {
         const copies = copiesRaw
             .split("\n")
             .map((line) => line.split(","))
-            .map(([id, bookId]) => ({ id, bookId }))
+            .map(([id, bookId, member]) => ({ id, bookId, member }))
 
         res.send(copies.filter((copy) => copy.bookId === req.params.bookId));
     } catch (err) {
@@ -49,6 +54,40 @@ app.post("/api/books/:bookId/copies", async (req, res) => {
 
         res.status(201);
         res.end();
+    } catch (err) {
+        console.error(err);
+        res.status(500);
+        res.send("Something went wrong");
+    }
+});
+
+app.patch("/api/copies/:copyId", async (req, res) => {
+    try {
+        const copiesRaw = await readFile(copiesPath, "utf8");
+        const copies = copiesRaw
+            .split("\n")
+            .map((line) => line.split(","))
+            .map(([id, bookId, member]) => ({ id, bookId, member }));
+
+        const copy = copies.find((c) => c.id === req.params.copyId);
+
+        if (!copy) {
+            res.status(404);
+            res.send(`Copy ${req.params.copyId} not found.`);
+            return;
+        }
+
+        const { member } = req.body;
+
+        if (member && (!(typeof member === "string") || !member.match(/[a-z ]*/i))) {
+            res.status(400);
+            res.send("Member name must contain letters and spaces only.");
+            return;
+        }
+
+        copy.member = req.body.member;
+
+        await writeFile(copiesPath, copies.map(({ id, bookId, member }) => `${id},${bookId},${member}`).join("\n"));
     } catch (err) {
         console.error(err);
         res.status(500);

@@ -1,4 +1,4 @@
-import { createCopy, getBookDetails, getCopies } from "./books.js";
+import { Copy, borrowCopy, createCopy, getBookDetails, getCopies } from "./books.js";
 
 async function app() {
     const bookId = window.location.hash.slice(1);
@@ -43,14 +43,14 @@ async function app() {
 
 app();
 
-function renderCopies(copies: { id: string; bookId: string; }[]) {
+function renderCopies(copies: Copy[]) {
     const copyCount = document.getElementById("copy-count");
 
     if (!copyCount) {
         throw new Error();
     }
 
-    copyCount.innerText = copies.length ? `Copies: ${copies.length}` : "This book has no copies";
+    copyCount.innerText = copies.length ? `Count: ${copies.length}` : "This book has no copies";
 
     const copiesTable = document.getElementById("copies");
 
@@ -59,6 +59,24 @@ function renderCopies(copies: { id: string; bookId: string; }[]) {
     }
 
     copiesTable.innerHTML = copies
-        .map((copy) => `<tr><td>${copy.id}</td><td>🟢</td></tr>`)
+        .map((copy) => `<tr><td>${copy.id}</td><td>${copy.member ? "🔴" : "🟢"}</td><td>${
+            copy.member ??
+            `<form class="borrow-form">
+                <input type="hidden" name="bookId" value="${copy.bookId}" />
+                <input type="hidden" name="copyId" value="${copy.id}" />
+                <input name="member" />
+                <button>Borrow</button>
+            </form>`
+        }</td></tr>`)
         .join("\n");
+    
+    document.querySelectorAll(".borrow-form").forEach((form) => form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target as HTMLFormElement);
+
+        await borrowCopy(formData.get("copyId")!.toString(), formData.get("member")!.toString());
+
+        renderCopies(await getCopies(formData.get("bookId")!.toString()));
+    }));
 }

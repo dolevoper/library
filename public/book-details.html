@@ -15,33 +15,36 @@
 <body>
     <main class="flow">
         <a href="index.html">⬅️ Back</a>
-        
-        <article>
-            <h1 id="book-title"></h1>
-            <p id="book-author"></p>
 
-            <img id="book-cover" alt="Book cover" class="cover" />
-            <ul>
-                <li>Language: <span id="book-language"></span></li>
-                <li>Year: <span id="book-year"></span></li>
-                <li>Pages: <span id="book-pages"></span></li>
-            </ul>
-        </article>
-        
-        <article class="flow">
-            <h2>Copies</h2>
-            <button id="create-copy">➕ Create</button>
-            <table>
-                <thead>
-                    <tr>
-                        <td>ID</td>
-                        <td>Availability</td>
-                    </tr>
-                </thead>
-                <tbody id="copies"></tbody>
-            </table>
-            <p id="copy-count"></p>
-        </article>
+        <div class="cluster">
+            <article class="flow">
+                <h1 id="book-title"></h1>
+                <p id="book-author"></p>
+    
+                <img id="book-cover" alt="Book cover" class="cover" />
+                <ul>
+                    <li>Language: <span id="book-language"></span></li>
+                    <li>Year: <span id="book-year"></span></li>
+                    <li>Pages: <span id="book-pages"></span></li>
+                </ul>
+            </article>
+            
+            <article class="flow">
+                <h2>Copies</h2>
+                <button id="create-copy">➕ Create</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td>Availability</td>
+                            <td>Member</td>
+                        </tr>
+                    </thead>
+                    <tbody id="copies"></tbody>
+                </table>
+                <p id="copy-count"></p>
+            </article>
+        </div>
     </main>
 
     <script type="module" src="book-details.js"></script>

@@ -10,9 +10,10 @@ type Book = {
   year: number
 };
 
-type Copy = {
+export type Copy = {
   id: string,
-  bookId: string
+  bookId: string,
+  member?: string
 };
 
 export async function getBooks(): Promise<Pick<Book, "id" | "title" | "author">[]> {
@@ -37,4 +38,16 @@ export async function createCopy(bookId: string) {
   await fetch(`/api/books/${bookId}/copies`, {
     method: "post"
   });
+}
+
+export async function borrowCopy(copyId: string, member: string) {
+  const body = JSON.stringify({ member });
+  await fetch(`/api/copies/${copyId}`, {
+    method: "patch",
+    body,
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Length": body.length.toString()
+    }
+  })
 }
