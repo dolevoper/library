@@ -1,10 +1,10 @@
 import { createServer } from "http";
 import { appendFile, readFile, writeFile } from "fs/promises";
 import express from "express";
-import books from "./books.json";
 import path from "path";
 import { randomUUID } from "crypto";
 import { json } from "body-parser";
+import { router } from "./books.router.ts";
 
 const app = express();
 
@@ -15,21 +15,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/api/books", (req, res) => {
-    res.send(books.map(({ id, author, title }) => ({ id, author, title })));
-});
-
-app.get("/api/books/:bookId", (req, res) => {
-    const book = books.find((b) => b.id === req.params.bookId);
-
-    if (!book) {
-        res.status(404);
-        res.send(`Book with id ${req.params.bookId} not found.`);
-        return;
-    }
-
-    res.send(book);
-});
+app.use("/api/books", router);
 
 const copiesPath = path.join(process.cwd(), "src", "copies.csv");
 
