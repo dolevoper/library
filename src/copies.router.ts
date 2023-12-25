@@ -1,26 +1,10 @@
-import { readFile, writeFile } from "fs/promises";
 import { Router } from "express";
-import path from "path";
+import { NotFoundError, updateMember } from "./copies.model";
 
 export const router = Router();
-const copiesPath = path.join(process.cwd(), "src", "copies.csv");
 
 router.patch("/:copyId", async (req, res) => {
     try {
-        const copiesRaw = await readFile(copiesPath, "utf8");
-        const copies = copiesRaw
-            .split("\n")
-            .map((line) => line.split(","))
-            .map(([id, bookId, member]) => ({ id, bookId, member }));
-
-        const copy = copies.find((c) => c.id === req.params.copyId);
-
-        if (!copy) {
-            res.status(404);
-            res.send(`Copy ${req.params.copyId} not found.`);
-            return;
-        }
-
         const { member } = req.body;
 
         if (member && (!(typeof member === "string") || !member.match(/[a-z ]*/i))) {
@@ -29,13 +13,17 @@ router.patch("/:copyId", async (req, res) => {
             return;
         }
 
-        copy.member = req.body.member;
-
-        await writeFile(copiesPath, copies.map(({ id, bookId, member }) => `${id},${bookId}${member ? `,${member}` : ""}`).join("\n"));
+        await updateMember(req.params.copyId, member);
 
         res.status(201);
         res.end();
     } catch (err) {
+        if (err instanceof NotFoundError) {
+            res.status(404);
+            res.send(`Copy ${req.params.copyId} not found.`);
+            return;
+        }
+
         console.error(err);
         res.status(500);
         res.send("Something went wrong");

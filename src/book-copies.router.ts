@@ -1,19 +1,11 @@
-import { randomUUID } from "crypto";
 import { Router } from "express";
-import { appendFile, readFile } from "fs/promises";
-import path from "path";
-
-const copiesPath = path.join(process.cwd(), "src", "copies.csv");
+import { create, read } from "./copies.model";
 
 export const router = Router({ mergeParams: true });
 
 router.get("/", async (req, res) => {
     try {
-        const copiesRaw = await readFile(copiesPath, "utf8");
-        const copies = copiesRaw
-            .split("\n")
-            .map((line) => line.split(","))
-            .map(([id, bookId, member]) => ({ id, bookId, member }))
+        const copies = await read();
 
         res.send(copies.filter((copy) => copy.bookId === req.book?.id));
     } catch (err) {
@@ -25,9 +17,11 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const copyId = randomUUID().split("-").at(-1)!;
+        if (!req.book) {
+            throw new Error("Book not found");
+        }
 
-        await appendFile(copiesPath, `\n${copyId},${req.book?.id}`);
+        await create(req.book.id);
 
         res.status(201);
         res.end();
