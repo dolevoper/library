@@ -42,12 +42,13 @@ export async function createCopy(bookId: string) {
 
 export async function borrowCopy(copyId: string, member: string) {
   const body = JSON.stringify({ member });
+
   await fetch(`/api/copies/${copyId}`, {
-    method: "patch",
+    method: "PATCH",
     body,
     headers: {
       "Content-Type": "application/json",
       "Content-Length": body.length.toString()
     }
-  })
+  });
 }

@@ -5,12 +5,15 @@ import books from "./books.json";
 import path from "path";
 import { randomUUID } from "crypto";
 import { json } from "body-parser";
-import cors from "cors";
 
 const app = express();
 
-app.use(cors())
 app.use(json());
+
+app.use((req, res, next) => {
+    console.log(req.method, req.url, req.body);
+    next();
+});
 
 app.get("/api/books", (req, res) => {
     res.send(books.map(({ id, author, title }) => ({ id, author, title })));
@@ -49,7 +52,7 @@ app.get("/api/books/:bookId/copies", async (req, res) => {
 app.post("/api/books/:bookId/copies", async (req, res) => {
     try {
         const copyId = randomUUID().split("-").at(-1)!;
-        
+
         await appendFile(copiesPath, `\n${copyId},${req.params.bookId}`);
 
         res.status(201);
@@ -87,7 +90,10 @@ app.patch("/api/copies/:copyId", async (req, res) => {
 
         copy.member = req.body.member;
 
-        await writeFile(copiesPath, copies.map(({ id, bookId, member }) => `${id},${bookId},${member}`).join("\n"));
+        await writeFile(copiesPath, copies.map(({ id, bookId, member }) => `${id},${bookId}${member ? `,${member}` : ""}`).join("\n"));
+
+        res.status(201);
+        res.end();
     } catch (err) {
         console.error(err);
         res.status(500);
