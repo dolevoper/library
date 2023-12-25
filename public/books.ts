@@ -28,8 +28,7 @@ export async function getBookDetails(bookId: string): Promise<Book> {
 }
 
 export async function getCopies(bookId: string): Promise<Copy[]> {
-  return [{
-      id: crypto.randomUUID(),
-      bookId
-  }];
+  const res = await fetch(`/api/books/${bookId}/copies`);
+
+  return res.json();
 }
