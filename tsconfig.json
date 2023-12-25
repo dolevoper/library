@@ -1,9 +1,7 @@
 {
   "extends": "./base.tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "./src",
     "module": "NodeNext",
-    "esModuleInterop": true,
     "moduleResolution": "NodeNext",
     "resolveJsonModule": true
   },
