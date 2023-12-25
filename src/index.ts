@@ -1,8 +1,9 @@
 import { createServer } from "http";
-import { readFile } from "fs/promises";
+import { appendFile, readFile } from "fs/promises";
 import express from "express";
 import books from "./books.json";
 import path from "path";
+import { randomUUID } from "crypto";
 
 const app = express();
 
@@ -22,12 +23,32 @@ app.get("/api/books/:bookId", (req, res) => {
     res.send(book);
 });
 
+const copiesPath = path.join(process.cwd(), "src", "copies.csv");
+
 app.get("/api/books/:bookId/copies", async (req, res) => {
     try {
-        const copiesRaw = await readFile(path.join(process.cwd(), "src", "copies.json"), "utf8");
-        const copies = JSON.parse(copiesRaw) as { id: string, bookId: string }[];
+        const copiesRaw = await readFile(copiesPath, "utf8");
+        const copies = copiesRaw
+            .split("\n")
+            .map((line) => line.split(","))
+            .map(([id, bookId]) => ({ id, bookId }))
 
         res.send(copies.filter((copy) => copy.bookId === req.params.bookId));
+    } catch (err) {
+        console.error(err);
+        res.status(500);
+        res.send("Something went wrong");
+    }
+});
+
+app.post("/api/books/:bookId/copies", async (req, res) => {
+    try {
+        const copyId = randomUUID().split("-").at(-1)!;
+        
+        await appendFile(copiesPath, `\n${copyId},${req.params.bookId}`);
+
+        res.status(201);
+        res.end();
     } catch (err) {
         console.error(err);
         res.status(500);

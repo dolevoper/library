@@ -1,4 +1,4 @@
-import { getBookDetails, getCopies } from "./books.js";
+import { createCopy, getBookDetails, getCopies } from "./books.js";
 
 async function app() {
     const bookId = window.location.hash.slice(1);
@@ -16,6 +16,34 @@ async function app() {
     renderBookField("year");
     renderBookField("pages");
 
+    renderCopies(copies);
+
+    const createCopyButton = document.getElementById("create-copy");
+
+    if (!createCopyButton) {
+        throw new Error();
+    }
+
+    createCopyButton.addEventListener("click", async () => {
+        await createCopy(bookId);
+
+        renderCopies(await getCopies(bookId));
+    });
+
+    function renderBookField(field: keyof typeof bookDetails) {
+        const authorSpan = document.getElementById(`book-${field}`);
+
+        if (!authorSpan) {
+            throw new Error();
+        }
+
+        authorSpan.innerText = bookDetails[field].toString();
+    }
+}
+
+app();
+
+function renderCopies(copies: { id: string; bookId: string; }[]) {
     const copyCount = document.getElementById("copy-count");
 
     if (!copyCount) {
@@ -33,16 +61,4 @@ async function app() {
     copiesTable.innerHTML = copies
         .map((copy) => `<tr><td>${copy.id}</td><td>🟢</td></tr>`)
         .join("\n");
-
-    function renderBookField(field: keyof typeof bookDetails) {
-        const authorSpan = document.getElementById(`book-${field}`);
-
-        if (!authorSpan) {
-            throw new Error();
-        }
-
-        authorSpan.innerText = bookDetails[field].toString();
-    }
 }
-
-app();

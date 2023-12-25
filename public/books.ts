@@ -32,3 +32,9 @@ export async function getCopies(bookId: string): Promise<Copy[]> {
 
   return res.json();
 }
+
+export async function createCopy(bookId: string) {
+  await fetch(`/api/books/${bookId}/copies`, {
+    method: "post"
+  });
+}
