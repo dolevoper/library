@@ -16,13 +16,23 @@ async function app() {
     renderBookField("year");
     renderBookField("pages");
 
-    const bookCopies = document.getElementById("book-copies");
+    const copyCount = document.getElementById("copy-count");
 
-    if (!bookCopies) {
+    if (!copyCount) {
         throw new Error();
     }
 
-    bookCopies.innerText = copies.length.toString();
+    copyCount.innerText = copies.length ? `Copies: ${copies.length}` : "This book has no copies";
+
+    const copiesTable = document.getElementById("copies");
+
+    if (!copiesTable) {
+        throw new Error();
+    }
+
+    copiesTable.innerHTML = copies
+        .map((copy) => `<tr><td>${copy.id}</td><td>🟢</td></tr>`)
+        .join("\n");
 
     function renderBookField(field: keyof typeof bookDetails) {
         const authorSpan = document.getElementById(`book-${field}`);

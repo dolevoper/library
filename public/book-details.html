@@ -9,22 +9,35 @@
     <link rel="stylesheet" href="composition.css" />
     <link rel="stylesheet" href="util.css" />
     <link rel="stylesheet" href="block.css" />
+    <link rel="stylesheet" href="book-details.css" />
 </head>
 
 <body>
     <main class="flow">
         <a href="index.html">⬅️ Back</a>
         <h1 id="book-title"></h1>
-        <h2 id="book-author"></h2>
+        <p id="book-author"></p>
 
         <img id="book-cover" alt="Book cover" class="cover" />
         <ul>
             <li>Language: <span id="book-language"></span></li>
             <li>Year: <span id="book-year"></span></li>
             <li>Pages: <span id="book-pages"></span></li>
-            <li>Copies: <span id="book-copies"></span></li>
         </ul>
-        <p></p>
+        
+        <article>
+            <h2>Copies</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Availability</td>
+                    </tr>
+                </thead>
+                <tbody id="copies"></tbody>
+            </table>
+            <p id="copy-count"></p>
+        </article>
     </main>
 
     <script type="module" src="book-details.js"></script>
