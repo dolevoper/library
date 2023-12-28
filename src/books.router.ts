@@ -22,7 +22,7 @@ router.param("bookId", async (req, res, next, bookId) => {
 
 router.get("/", async (req, res, next) => {
     try {
-        const books = await Book.find({ title: /\Wthe\W/i }, { title: true, author: true });
+        const books = await Book.find({ title: /.*/i }, { title: true, author: true });
 
         res.send(books);
     } catch (err) {
