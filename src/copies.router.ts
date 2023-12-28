@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { NotFoundError, updateMember } from "./copies.model";
+import { NotFoundError, borrowCopy } from "./copies.model";
 
 export const router = Router();
 
@@ -13,7 +13,7 @@ router.patch("/:copyId", async (req, res) => {
             return;
         }
 
-        await updateMember(req.params.copyId, member);
+        await borrowCopy(req.params.copyId, member);
 
         res.status(201);
         res.end();

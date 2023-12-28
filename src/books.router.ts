@@ -1,24 +1,33 @@
 import { Router } from "express";
-import { router as bookCopiesRouter } from "./book-copies.router.ts";
-
-import books from "./books.json";
+import { router as bookCopiesRouter } from "./book-copies.router";
+import { Book } from "./books.model";
 
 export const router = Router();
 
-router.param("bookId", (req, res, next, bookId) => {
-    req.book = books.find((b) => b.id === bookId);
+router.param("bookId", async (req, res, next, bookId) => {
+    try {
+        req.book = await Book.findById(bookId);
 
-    if (!req.book) {
-        res.status(404);
-        res.send(`Book with id ${bookId} not found.`);
-        return;
+        if (!req.book) {
+            res.status(404);
+            res.send(`Book with id ${bookId} not found.`);
+            return;
+        }
+
+        next();
+    } catch (err) {
+        next(err);
     }
-
-    next();
 });
 
-router.get("/", (req, res) => {
-    res.send(books.map(({ id, author, title }) => ({ id, author, title })));
+router.get("/", async (req, res, next) => {
+    try {
+        const books = await Book.find();
+
+        res.send(books);
+    } catch (err) {
+        next(err);
+    }
 });
 
 router.get("/:bookId", (req, res) => {

@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { readFileSync } from "fs";
 import { appendFile, readFile, writeFile } from "fs/promises";
 import path from "path";
 
@@ -25,12 +26,16 @@ export async function create(bookId: string) {
     await appendFile(copiesPath, `\n${copyId},${bookId}`);
 }
 
-export async function updateMember(copyId: string, member?: string) {
-    const copies = await read()
+export async function borrowCopy(copyId: string, member?: string) {
+    const copies = await read();
     const copy = copies.find((c) => c.id === copyId);
 
     if (!copy) {
         throw new NotFoundError();
+    }
+
+    if (copy.member) {
+        throw new Error("Copy already borrowed");
     }
 
     copy.member = member;
@@ -42,6 +47,8 @@ export async function updateMember(copyId: string, member?: string) {
             .join("\n")
     );
 }
+
+export async function returnCopy(copyId: string) { }
 
 export class NotFoundError extends Error {
     constructor(message?: string) {

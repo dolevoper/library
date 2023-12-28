@@ -1,9 +1,12 @@
+import "dotenv/config";
+
 import { createServer } from "http";
 import express from "express";
 import { json } from "body-parser";
 import { router as booksRouter } from "./books.router";
 import { router as copiesRouter } from "./copies.router";
 import { router as membersRouter } from "./members.router";
+import mongoose from "mongoose";
 
 export const app = express();
 
@@ -33,4 +36,17 @@ app.use((err, req, res, next) => {
 const server = createServer(app);
 const port = process.env.PORT ?? 3000;
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
+
+async function startServer() {
+    if (!process.env.CONN_STRING) {
+        throw new Error("Must provide connection string")
+    }
+
+    await mongoose.connect(process.env.CONN_STRING, {
+        dbName: "library"
+    });
+
+    server.listen(port, () => console.log(`Listening on port ${port}`));
+}
+
+startServer();
