@@ -1,5 +1,5 @@
 type Book = {
-  id: string,
+  _id: string,
   author: string,
   country: string,
   imageLink: string,
@@ -16,7 +16,7 @@ export type Copy = {
   member?: string
 };
 
-export async function getBooks(): Promise<Pick<Book, "id" | "title" | "author">[]> {
+export async function getBooks(): Promise<Pick<Book, "_id" | "title" | "author">[]> {
   const res = await fetch("/api/books");
 
   return res.json();
