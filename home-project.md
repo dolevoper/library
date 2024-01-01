@@ -3,3 +3,12 @@
 1. Return books
 2. Search members page
 3. Distinct members
+
+## Part II
+
+1. Build list members page (add search)
+2. Build member details page (edit member)
+3. Build add member page
+4. List borrowed copies in member details page (allow to return copy)
+
+- `git checkout practice_refactor` - fix errors in book-details.ts

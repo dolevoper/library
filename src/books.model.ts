@@ -1,13 +1,13 @@
 import { Schema, Types, model } from "mongoose";
 
 interface Copy {
-    _id: Types.ObjectId,
-    member?: string
+    _id: Types.ObjectId;
+    member?: Types.ObjectId;
 }
 
 const copySchema = new Schema<Copy>({
     _id: Schema.Types.ObjectId,
-    member: String
+    member: { type: Schema.Types.ObjectId, ref: "Member" }
 });
 
 export interface Book {

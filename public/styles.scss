@@ -27,7 +27,12 @@ a {
     color: deeppink;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     text-wrap: balance;
     line-height: 1;
 }
@@ -47,7 +52,9 @@ img {
     background: silver;
 }
 
-button, input {
+button,
+input,
+select {
     font-size: inherit;
     font-family: inherit;
 }

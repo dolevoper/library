@@ -1,3 +1,8 @@
+export type Member = {
+  _id: string,
+  name: string
+};
+
 export type Book = {
   _id: string,
   author: string,
@@ -13,7 +18,7 @@ export type Book = {
 
 export type Copy = {
   _id: string,
-  member?: string
+  member?: Member
 };
 
 export type BookListResult = Pick<Book, "_id" | "title" | "author">[];
@@ -48,4 +53,8 @@ export async function borrowCopy(copyId: string, member: string) {
       "Content-Length": body.length.toString()
     }
   });
+}
+
+export function getMembers(): Promise<Member[]> {
+  return fetch("/api/members").then((res) => res.json());
 }
