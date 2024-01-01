@@ -1,9 +1,10 @@
-import { Book, borrowCopy, createCopy, getBookDetails } from "./books.js";
+import { Copy, borrowCopy, createCopy, getBookDetails, getCopies } from "./books.js";
 
 async function app() {
     const bookId = window.location.hash.slice(1);
-    const [bookDetails, members] = await Promise.all([
+    const [bookDetails, copies, members] = await Promise.all([
         getBookDetails(bookId),
+        getCopies(bookId),
         getMembers()
     ]);
 
@@ -16,7 +17,7 @@ async function app() {
     renderBookField("year");
     renderBookField("pages");
 
-    renderCopies(bookDetails);
+    renderCopies(copies);
     bindCreateCopyButton(bookId);
     buildMembersList(members);
 
@@ -57,13 +58,11 @@ function bindCreateCopyButton(bookId: string) {
     createCopyButton.addEventListener("click", async () => {
         await createCopy(bookId);
 
-        const book = await getBookDetails(bookId);
-
-        renderCopies(book);
+        renderCopies(await getCopies(bookId));
     });
 }
 
-function renderCopies({ _id, copies }: Book) {
+function renderCopies(copies: Copy[]) {
     const copyCount = document.getElementById("copy-count");
 
     if (!copyCount) {
@@ -79,9 +78,10 @@ function renderCopies({ _id, copies }: Book) {
     }
 
     copiesTable.innerHTML = copies
-        .map((copy) => `<tr><td>${copy._id}</td><td>${copy.member ? "🔴" : "🟢"}</td><td>${copy.member ??
+        .map((copy) => `<tr><td>${copy.id}</td><td>${copy.member ? "🔴" : "🟢"}</td><td>${copy.member ??
             `<form class="borrow-form">
-                <input type="hidden" name="copyId" value="${copy._id}" />
+                <input type="hidden" name="bookId" value="${copy.bookId}" />
+                <input type="hidden" name="copyId" value="${copy.id}" />
                 <input name="member" list="members" autocomplete="off" />
                 <button>Borrow</button>
             </form>`
@@ -95,12 +95,12 @@ function renderCopies({ _id, copies }: Book) {
 
         await borrowCopy(formData.get("copyId")!.toString(), formData.get("member")!.toString());
 
-        const [book, members] = await Promise.all([
-            getBookDetails(_id),
+        const [copies, members] = await Promise.all([
+            getCopies(formData.get("bookId")!.toString()),
             getMembers()
         ]);
 
-        renderCopies(book);
+        renderCopies(copies);
         buildMembersList(members);
     }));
 }
