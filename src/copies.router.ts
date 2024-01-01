@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { NotFoundError, borrowCopy } from "./copies.model";
+import { Error } from "mongoose";
+import { Book } from "./books.model";
 
 export const router = Router();
 
-router.patch("/:copyId", async (req, res) => {
+router.patch("/:copyId", async (req, res, next) => {
     try {
         const { member } = req.body;
 
@@ -13,19 +14,23 @@ router.patch("/:copyId", async (req, res) => {
             return;
         }
 
-        await borrowCopy(req.params.copyId, member);
+        await Book.updateOne({
+            "copies._id": req.params.copyId
+        }, {
+            $set: {
+                "copies.$.member": member
+            }
+        }, { upsert: false });
 
         res.status(201);
         res.end();
     } catch (err) {
-        if (err instanceof NotFoundError) {
+        if (err instanceof Error.CastError) {
             res.status(404);
             res.send(`Copy ${req.params.copyId} not found.`);
             return;
         }
 
-        console.error(err);
-        res.status(500);
-        res.send("Something went wrong");
+        next(err)
     }
 });
