@@ -22,7 +22,12 @@ router.param("bookId", async (req, res, next, bookId) => {
 
 router.get("/", async (req, res, next) => {
     try {
-        const books = await Book.find({ title: /.*/i }, { title: true, author: true });
+        const search = req.query.search?.toString() ?? ".*";
+        const searchPattern = new RegExp(search, "i");
+        const books = await Book.find(
+            { $or: [{ title: searchPattern }, { author: searchPattern }] },
+            { title: true, author: true }
+        );
 
         res.send(books);
     } catch (err) {

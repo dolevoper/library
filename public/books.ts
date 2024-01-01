@@ -16,8 +16,11 @@ export type Copy = {
   member?: string
 };
 
-export async function getBooks(): Promise<Pick<Book, "_id" | "title" | "author">[]> {
-  const res = await fetch("/api/books");
+export type BookListResult = Pick<Book, "_id" | "title" | "author">[];
+
+export async function getBooks(search?: string): Promise<BookListResult> {
+  const query = search ? `?search=${search}` : "";
+  const res = await fetch(`/api/books${query}`);
 
   return res.json();
 }

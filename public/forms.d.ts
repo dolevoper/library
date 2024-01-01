@@ -1,0 +1,3 @@
+interface SubmitEvent {
+    target: HTMLFormElement;
+}
