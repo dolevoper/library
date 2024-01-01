@@ -3,10 +3,10 @@ import "dotenv/config";
 import { createServer } from "http";
 import express from "express";
 import { json } from "body-parser";
+import mongoose from "mongoose";
 import { router as booksRouter } from "./books.router";
 import { router as copiesRouter } from "./copies.router";
 import { router as membersRouter } from "./members.router";
-import mongoose from "mongoose";
 
 export const app = express();
 
