@@ -1,4 +1,4 @@
-type Book = {
+export type Book = {
   _id: string,
   author: string,
   country: string,
@@ -7,12 +7,12 @@ type Book = {
   link: string,
   pages: number,
   title: string,
-  year: number
+  year: number,
+  copies: Copy[]
 };
 
 export type Copy = {
-  id: string,
-  bookId: string,
+  _id: string,
   member?: string
 };
 
@@ -27,12 +27,6 @@ export async function getBooks(search?: string): Promise<BookListResult> {
 
 export async function getBookDetails(bookId: string): Promise<Book> {
   const res = await fetch(`/api/books/${bookId}`);
-
-  return res.json();
-}
-
-export async function getCopies(bookId: string): Promise<Copy[]> {
-  const res = await fetch(`/api/books/${bookId}/copies`);
 
   return res.json();
 }

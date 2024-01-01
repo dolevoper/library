@@ -6,6 +6,7 @@ export const router = Router();
 
 router.param("bookId", async (req, res, next, bookId) => {
     try {
+        // const book = await Book.findById(bookId);
         req.book = await Book.findById(bookId);
 
         if (!req.book) {

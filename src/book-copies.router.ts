@@ -1,19 +1,8 @@
 import { Router } from "express";
-import { create, read } from "./copies.model";
+import { Types } from "mongoose";
+import { Book } from "./books.model";
 
 export const router = Router({ mergeParams: true });
-
-router.get("/", async (req, res) => {
-    try {
-        const copies = await read();
-
-        res.send(copies.filter((copy) => copy.bookId === req.book?.id));
-    } catch (err) {
-        console.error(err);
-        res.status(500);
-        res.send("Something went wrong");
-    }
-});
 
 router.post("/", async (req, res) => {
     try {
@@ -21,7 +10,9 @@ router.post("/", async (req, res) => {
             throw new Error("Book not found");
         }
 
-        await create(req.book.id);
+        await Book.updateOne({ _id: req.book._id }, {
+            $push: { copies: { _id: new Types.ObjectId() } }
+        });
 
         res.status(201);
         res.end();

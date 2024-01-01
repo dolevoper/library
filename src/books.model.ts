@@ -1,6 +1,16 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
-interface Book {
+interface Copy {
+    _id: Types.ObjectId,
+    member?: string
+}
+
+const copySchema = new Schema<Copy>({
+    _id: Schema.Types.ObjectId,
+    member: String
+});
+
+export interface Book {
     author: string;
     country: string;
     imageLink: string;
@@ -9,9 +19,10 @@ interface Book {
     pages: number;
     title: string;
     year: number;
+    copies: Copy[];
 }
 
-const schema = new Schema<Book>({
+const bookSchema = new Schema<Book>({
     author: String,
     country: String,
     imageLink: String,
@@ -19,7 +30,8 @@ const schema = new Schema<Book>({
     link: String,
     pages: Number,
     title: String,
-    year: Number
+    year: Number,
+    copies: [copySchema]
 });
 
-export const Book = model<Book>("Book", schema, "books");
+export const Book = model<Book>("Book", bookSchema, "books");
