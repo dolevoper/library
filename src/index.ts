@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { router as booksRouter } from "./books.router";
 import { router as copiesRouter } from "./copies.router";
 import { router as membersRouter } from "./members.router";
+import { router as authRouter } from "./auth.router";
 
 export const app = express();
 
@@ -18,6 +19,7 @@ const logRequests: RequestHandler = (req, res, next) => {
 };
 app.use(logRequests);
 
+app.use("/api/auth", authRouter);
 app.use("/api/books", booksRouter);
 app.use("/api/copies", copiesRouter);
 app.use("/api/members", membersRouter);
