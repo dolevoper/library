@@ -1,15 +1,14 @@
 declare namespace Express {
     export interface Request {
-        book?: Book;
-        // book?: {
-        //     author: string,
-        //     country: string,
-        //     imageLink: string,
-        //     language: string,
-        //     link: string,
-        //     pages: number,
-        //     title: string,
-        //     year: number
-        // };
+        book: (import("mongoose").Document<
+            unknown,
+            {},
+            import("./books.model").Book
+        > &
+            import("./books.model").Book &
+        {
+            _id: Types.ObjectId;
+        })
+        | null;
     }
 }

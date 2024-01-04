@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { createServer } from "http";
-import express from "express";
+import express, { ErrorRequestHandler, RequestHandler } from "express";
 import { json } from "body-parser";
 import mongoose from "mongoose";
 import { router as booksRouter } from "./books.router";
@@ -12,10 +12,11 @@ export const app = express();
 
 app.use(json());
 
-app.use((req, res, next) => {
+const logRequests: RequestHandler = (req, res, next) => {
     console.log(req.method, req.url, req.body);
     next();
-});
+};
+app.use(logRequests);
 
 app.use("/api/books", booksRouter);
 app.use("/api/copies", copiesRouter);
@@ -23,7 +24,7 @@ app.use("/api/members", membersRouter);
 
 app.use(express.static("public"));
 
-app.use((err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     if (res.headersSent) {
         next(err);
     }
@@ -31,7 +32,8 @@ app.use((err, req, res, next) => {
     console.error(err);
     res.status(500);
     res.send("Something went wrong");
-});
+};
+app.use(errorHandler);
 
 const server = createServer(app);
 const port = process.env.PORT ?? 3000;

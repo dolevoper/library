@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { Types } from "mongoose";
-import { Book } from "./books.model";
 
 export const router = Router({ mergeParams: true });
 
@@ -10,9 +9,8 @@ router.post("/", async (req, res) => {
             throw new Error("Book not found");
         }
 
-        await Book.updateOne({ _id: req.book._id }, {
-            $push: { copies: { _id: new Types.ObjectId() } }
-        });
+        req.book.copies.push({ _id: new Types.ObjectId() });
+        await req.book.save();
 
         res.status(201);
         res.end();
