@@ -1,4 +1,4 @@
-document.forms.namedItem("register")?.addEventListener("submit", async (e) => {
+document.forms.namedItem("login")?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
@@ -8,7 +8,7 @@ document.forms.namedItem("register")?.addEventListener("submit", async (e) => {
             password: formData.get("password")
         });
 
-        const res = await fetch("/api/auth/register", {
+        const res = await fetch("/api/auth/login", {
             method: "POST",
             body,
             headers: {
@@ -21,7 +21,7 @@ document.forms.namedItem("register")?.addEventListener("submit", async (e) => {
             throw new Error(await res.text());
         }
 
-        window.location.replace("/login.html");
+        window.location.replace("/");
     } catch (err) {
         console.error(err);
         alert((err as Error).message);

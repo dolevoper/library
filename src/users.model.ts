@@ -13,13 +13,15 @@ const schema = new Schema<User>({
     },
     password: {
         type: String,
-        set(value: string) {
-            const hash = createHash("sha256");
-            hash.update(value);
-
-            return hash.digest("base64");
-        }
+        set: hashPassword
     }
 });
+
+export function hashPassword(value: string) {
+    const hash = createHash("sha256");
+    hash.update(value);
+
+    return hash.digest("base64");
+}
 
 export const User = model<User>("User", schema, "users");

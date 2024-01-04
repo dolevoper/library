@@ -3,6 +3,7 @@ import "dotenv/config";
 import { createServer } from "http";
 import express, { ErrorRequestHandler, RequestHandler } from "express";
 import { json } from "body-parser";
+import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import { router as booksRouter } from "./books.router";
 import { router as copiesRouter } from "./copies.router";
@@ -12,6 +13,7 @@ import { router as authRouter } from "./auth.router";
 export const app = express();
 
 app.use(json());
+app.use(cookieParser("super duper secret value that shouldn't be in the code"));
 
 const logRequests: RequestHandler = (req, res, next) => {
     console.log(req.method, req.url, req.body);
@@ -20,6 +22,17 @@ const logRequests: RequestHandler = (req, res, next) => {
 app.use(logRequests);
 
 app.use("/api/auth", authRouter);
+
+app.use("/api", (req, res, next) => {
+    if (!req.signedCookies.userId) {
+        res.status(403);
+        res.end();
+        return;
+    }
+
+    next();
+});
+
 app.use("/api/books", booksRouter);
 app.use("/api/copies", copiesRouter);
 app.use("/api/members", membersRouter);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { User } from "./users.model";
+import { User, hashPassword } from "./users.model";
 
 export const router = Router();
 
@@ -24,6 +24,33 @@ router.post("/register", async (req, res, next) => {
             return;
         }
 
+        next(err);
+    }
+});
+
+router.post("/login", async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+
+        const user = await User.findOne({
+            username,
+            password
+        });
+
+        if (!user) {
+            res.status(401);
+            res.send("username and password doesn't match");
+            return;
+        }
+
+        res.cookie("userId", user.username, {
+            signed: true,
+            secure: true,
+            httpOnly: true
+        });
+        res.status(200);
+        res.send();
+    } catch (err) {
         next(err);
     }
 });
